@@ -1,0 +1,13 @@
+@function headings($tag) {
+  @return map-get($tagMap, $tag);
+}
+
+$tagMap: (
+  'h1': 72px,
+  'h2': 64px,
+  'h3': 36px,
+  'h4': 24px,
+  'h5': 18px,
+  'h6': 12px,
+  'p': 16px,
+);

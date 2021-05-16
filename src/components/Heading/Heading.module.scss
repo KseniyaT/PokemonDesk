@@ -1,0 +1,40 @@
+@import '../../headings';
+
+.root {
+  font-weight: 400;
+
+  &,
+  &[tag-variant='p'] {
+    font-size: headings(p);
+  }
+
+  @at-root h1#{&},
+    &[tag-variant='h1'] {
+    font-size: headings(h1);
+  }
+
+  @at-root h2#{&},
+    &[tag-variant='h2'] {
+    font-size: headings(h2);
+  }
+
+  @at-root h3#{&},
+    &[tag-variant='h3'] {
+    font-size: headings(h3);
+  }
+
+  @at-root h4#{&},
+    &[tag-variant='h4'] {
+    font-size: headings(h4);
+  }
+
+  @at-root h5#{&},
+    &[tag-variant='h5'] {
+    font-size: headings(h5);
+  }
+
+  @at-root h6#{&},
+    &[tag-variant='h6'] {
+    font-size: headings(h6);
+  }
+}
