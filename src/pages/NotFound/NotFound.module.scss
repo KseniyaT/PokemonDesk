@@ -1,0 +1,50 @@
+.root {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #d93e30;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 1280px;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  padding: 90px 0;
+}
+
+.text {
+  position: absolute;
+  top: 0;
+  font-weight: bold;
+  font-size: 700px;
+  line-height: 818px;
+  letter-spacing: 4px;
+  margin: 0;
+  z-index: 0;
+}
+
+.layer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 40px;
+  z-index: 1;
+}
+
+.subtitle {
+  font-weight: bold;
+  font-size: 48px;
+  line-height: 56px;
+
+  span {
+    color: #f2f2f2;
+  }
+}
+
+.button {
+  width: fit-content;
+  padding: 0 70px;
+}

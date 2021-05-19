@@ -29,6 +29,10 @@
     background: #07d6f2;
   }
 
+  &[button-schema='yellow'] {
+    background: #f2cb07;
+  }
+
   &[button-size='small'] {
     height: 19px;
     font-size: 12px;
