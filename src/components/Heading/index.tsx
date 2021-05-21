@@ -3,7 +3,7 @@ import cn from 'classnames';
 import s from './Heading.module.scss';
 
 interface CompProps {
-  tag: ComponentType | keyof JSX.IntrinsicElements;
+  tag?: ComponentType | keyof JSX.IntrinsicElements;
   variant?: string;
 }
 

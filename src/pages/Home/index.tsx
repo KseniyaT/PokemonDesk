@@ -1,10 +1,12 @@
 import React from 'react';
+import { navigate } from 'hookrouter';
 import Header from '../../components/Header';
 import Layout from '../../components/Layout';
 import Button from '../../components/Button';
 import Parallax from '../../components/Parallax';
 import Heading from '../../components/Heading';
 
+import { LinkEnum } from '../../routes';
 import s from './Home.module.scss';
 
 declare module 'react' {
@@ -30,7 +32,7 @@ const HomePage = () => {
           <Heading tag="h3" className={s.subheading}>
             You can know the type of Pokemon, its strengths, disadvantages and abilities
           </Heading>
-          <Button onClick={() => console.log('Button clicked!')}>See pokemons</Button>
+          <Button onClick={() => navigate(LinkEnum.POKEDEX)}>See pokemons</Button>
         </div>
         <div className={s.contentParallax}>
           <Parallax />
