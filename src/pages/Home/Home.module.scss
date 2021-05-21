@@ -1,0 +1,49 @@
+@import '../../variables';
+@import '../../breakpoints';
+
+.root {
+  min-height: 100vh;
+  background: linear-gradient(180deg, $third 0%, $primary 100%);
+  overflow: hidden;
+}
+
+.contentWrap {
+  display: flex;
+  padding: 80px 0;
+
+  @include media('>phone', '<desktop') {
+    flex-direction: column;
+  }
+}
+
+.contentText {
+  flex-basis: 40%;
+
+  @include media('>phone', '<desktop') {
+    flex-basis: auto;
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+}
+
+.heading {
+  font-weight: 400;
+  font-size: 72px;
+  line-height: 84px;
+  letter-spacing: 4px;
+  color: #000;
+  margin-top: 0;
+  margin-bottom: 32px;
+}
+
+.subheading {
+  margin-top: 0;
+  margin-bottom: 48px;
+}
+
+.contentParallax {
+  background: transparent;
+}
