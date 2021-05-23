@@ -13,6 +13,7 @@ module.exports = {
   },
   plugins: ['prettier', 'react', '@typescript-eslint'],
   rules: {
+    'jsx-a11y/control-has-associated-label': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     'react/jsx-props-no-spreading': 'off',
