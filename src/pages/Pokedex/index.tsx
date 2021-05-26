@@ -1,86 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { A } from 'hookrouter';
 import PokemonCard from '../../components/PokemonCard';
 import Heading from '../../components/Heading';
 import s from './Pokedex.module.scss';
-import req from '../../utils/request';
 import Pagination from '../../components/Pagination';
-import getQuery from '../../utils/getQueryParams';
+import Search from '../../components/Search';
+import useDebounce from '../../hook/useDebounce';
+import useData from '../../hook/useData';
+import { IPokemons, IPokemon } from '../../interface/pokemons';
+import { LinkEnum } from '../../routes';
 
-interface IStats {
-  hp: number;
-  attack: number;
-  defense: number;
-  'special-attack': number;
-  'special-defense': number;
-  speed: number;
+const LIMIT = 12;
+
+interface IQuery {
+  name?: string;
+  limit?: number | string;
+  offset?: number | string;
 }
-
-interface IPokemon {
-  name_clean: string; // eslint-disable-line camelcase
-  abilities?: string[];
-  stats: IStats;
-  types: [];
-  img: string;
-  name: string;
-  base_experience?: number; // eslint-disable-line camelcase
-  height?: number;
-  id: number;
-  is_default?: boolean; // eslint-disable-line camelcase
-  order?: number;
-  weight?: number;
-}
-
-interface IData {
-  count: number;
-  limit: number;
-  offset: number;
-  pokemons: IPokemon[];
-  total: number;
-}
-
-const LIMIT = 9;
-
-const usePokemons = (offset: number = 0, limit: number = LIMIT) => {
-  const [data, setData] = useState<IData>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  useEffect(() => {
-    const getPokemons = async () => {
-      setIsLoading(true);
-      try {
-        const query = getQuery({ offset, limit });
-        const result = await req('getPokemons', { search: `${query}` });
-        setData(result);
-        setIsError(false);
-      } catch {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getPokemons();
-  }, []);
-
-  return {
-    data,
-    isLoading,
-    isError,
-  };
-};
 
 const PokedexPage = () => {
-  const { data, isLoading, isError } = usePokemons();
+  const [searchValue, setSearchValue] = useState('');
+  const [query, setQuery] = useState<IQuery>({ limit: LIMIT });
+
+  const debounceValue = useDebounce(searchValue, 500);
+
+  const { data, isLoading, isError } = useData<IPokemons>('getPokemons', query, [debounceValue]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearchValue(value);
+    setQuery((state: IQuery) => ({
+      ...state,
+      name: value,
+    }));
+  };
 
   const handleClick = async (index: number) => {
     console.log('Pagination was clicked, index', index);
     // @TODO: add request with offset = index * LIMIT, limit = LIMIT
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   if (isError) {
     return <div>Something went wrong</div>;
@@ -89,27 +47,29 @@ const PokedexPage = () => {
   return (
     <div className={s.root}>
       <div className={s.wrap}>
-        {data && (
-          <>
-            <Heading tag="h3" className={s.title}>
-              {data.total} <span>Pokemons</span> for you to choose your favorite
-            </Heading>
-            <div className={s.pokemonsWrap}>
-              {data.pokemons.map((pokemon) => {
-                return (
+        <Heading tag="h3" className={s.title}>
+          {!isLoading && data && data.total} <span>Pokemons</span> for you to choose your favorite
+        </Heading>
+        <div className={s.searchWrap}>
+          <Search placeholder="Encuentra tu pokémon..." onChange={handleSearchChange} />
+        </div>
+        <div className={s.pokemonsWrap}>
+          {!isLoading &&
+            data &&
+            data.pokemons.map((pokemon: IPokemon) => {
+              return (
+                <A href={`${LinkEnum.POKEDEX}/${pokemon.id}`} key={pokemon.id}>
                   <PokemonCard
-                    key={pokemon.id}
                     pokemonName={pokemon.name}
                     stat={pokemon.stats}
                     types={pokemon.types}
                     imgUrl={pokemon.img}
                   />
-                );
-              })}
-              <Pagination length={Math.ceil(data.total / data.count)} onClick={handleClick} />
-            </div>
-          </>
-        )}
+                </A>
+              );
+            })}
+          <Pagination length={data ? Math.ceil(data.total / data.count) : 0} onClick={handleClick} />
+        </div>
       </div>
     </div>
   );

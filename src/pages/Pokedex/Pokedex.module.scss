@@ -12,6 +12,7 @@
   flex-direction: column;
   align-items: center;
   align-self: center;
+  width: 100%;
   max-width: 1280px;
   padding: 73px 0;
 }
@@ -34,4 +35,9 @@
   span {
     font-weight: bold;
   }
+}
+
+.searchWrap {
+  width: 100%;
+  margin-bottom: 45px;
 }

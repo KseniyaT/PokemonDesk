@@ -1,9 +1,16 @@
 import config from '../config';
 
-function getUrlWithParamsConfig(endpointName: string) {
+interface iQuery {
+  pathend?: number | string;
+  [key: string]: any;
+}
+
+function getUrlWithParamsConfig(endpointName: string, query: iQuery) {
+  const { pathend, ...rest } = query;
   return {
     ...config.server,
-    ...config.client.endpoint[endpointName].uri,
+    pathname: `${config.client.endpoint[endpointName].uri.pathname}/${pathend}`,
+    query: { ...rest },
   };
 }
 
