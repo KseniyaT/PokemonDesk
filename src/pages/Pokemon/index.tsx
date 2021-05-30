@@ -10,7 +10,7 @@ export interface PokemonProps {
 }
 
 const PokemonPage: React.FC<PokemonProps> = ({ id }) => {
-  const { data, isLoading, isError } = useData<IPokemon>('getPokemon', { pathend: id });
+  const { data, isLoading, isError } = useData<IPokemon>('getPokemon', { id });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -35,7 +35,7 @@ const PokemonPage: React.FC<PokemonProps> = ({ id }) => {
         <div className={s.overlap}>
           <div className={s.root}>
             <div className={s.avatar}>
-              <img src={data.img} className={s.img} />
+              <img src={data.img} className={s.img} alt={data.name} />
               <div className={s.types}>
                 {data.types.slice(0, 2).map((type) => {
                   return (

@@ -37,7 +37,25 @@ const config: INetworkConfig = {
       getPokemon: {
         method: 'GET',
         uri: {
-          pathname: 'api/v1/pokemon',
+          pathname: '/api/v1/pokemon/{id}',
+        },
+      },
+      createPokemon: {
+        method: 'POST',
+        uri: {
+          pathname: '/api/v1/pokemon/create',
+        },
+      },
+      updatePokemon: {
+        method: 'PUT',
+        uri: {
+          pathname: '/api/v1/pokemon/{id}',
+        },
+      },
+      deletePokemon: {
+        method: 'DELETE',
+        uri: {
+          pathname: '/api/v1/pokemon/{id}/delete',
         },
       },
     },
