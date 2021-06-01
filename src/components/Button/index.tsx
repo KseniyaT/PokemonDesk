@@ -3,7 +3,7 @@ import cn from 'classnames';
 import s from './Button.module.scss';
 
 interface ButtonProps {
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   fullWidth?: boolean;
   schema?: 'blue' | 'green' | 'yellow';
