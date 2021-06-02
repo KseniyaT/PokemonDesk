@@ -9,6 +9,8 @@ import useDebounce from '../../hook/useDebounce';
 import useData from '../../hook/useData';
 import { IPokemons, IPokemon } from '../../interface/pokemons';
 import { LinkEnum } from '../../routes';
+import Filter from '../../components/Filter';
+import FILTERS from './filters';
 
 const LIMIT = 12;
 
@@ -16,15 +18,28 @@ interface IQuery {
   name?: string;
   limit?: number | string;
   offset?: number | string;
+  types?: (string | number)[];
+  [key: string]: any;
+}
+
+interface IFilter {
+  types?: (string | number)[];
+  [key: string]: any;
 }
 
 const PokedexPage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [query, setQuery] = useState<IQuery>({ limit: LIMIT });
+  const [filter, setFilter] = useState<IFilter>();
+  const [offset, setOffset] = useState<number>(0);
 
   const debounceValue = useDebounce(searchValue, 500);
 
-  const { data, isLoading, isError } = useData<IPokemons>('getPokemons', query, [debounceValue]);
+  const { data, isLoading, isError } = useData<IPokemons>('getPokemons', query, [debounceValue, filter, offset]);
+
+  if (isError) {
+    return <div>Something went wrong</div>;
+  }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -35,14 +50,44 @@ const PokedexPage = () => {
     }));
   };
 
-  const handleClick = async (index: number) => {
-    console.log('Pagination was clicked, index', index);
-    // @TODO: add request with offset = index * LIMIT, limit = LIMIT
+  const handlePaginationClick = async (index: number) => {
+    const newOffset = index * LIMIT;
+    setQuery((state: IQuery) => ({
+      ...state,
+      offset: newOffset,
+    }));
+    setOffset(newOffset);
   };
 
-  if (isError) {
-    return <div>Something went wrong</div>;
-  }
+  const handleFilterClick = (filterName: string, id: string | number) => {
+    const filtersArray = getFiltersArray(filterName, id);
+
+    const newQuery = { ...query };
+    if (!filtersArray.length) {
+      delete newQuery[filterName];
+    } else {
+      newQuery[filterName] = filtersArray;
+    }
+
+    setQuery(newQuery);
+    setFilter({
+      [filterName]: filtersArray,
+    });
+  };
+
+  const getFiltersArray = (filterName: string, value: string | number) => {
+    if (filter && filter[filterName]) {
+      const filtersArray = [...filter[filterName]];
+      const valueIndex = filtersArray.indexOf(value);
+      if (valueIndex > -1) {
+        filtersArray.splice(valueIndex, 1);
+      } else {
+        filtersArray.push(value);
+      }
+      return filtersArray;
+    }
+    return [value];
+  };
 
   return (
     <div className={s.root}>
@@ -52,6 +97,9 @@ const PokedexPage = () => {
         </Heading>
         <div className={s.searchWrap}>
           <Search placeholder="Encuentra tu pokémon..." onChange={handleSearchChange} />
+        </div>
+        <div className={s.filtersWrap}>
+          <Filter filterName="Type" filters={FILTERS.TYPES} onClick={(id) => handleFilterClick('types', id)} />
         </div>
         <div className={s.pokemonsWrap}>
           {!isLoading &&
@@ -68,7 +116,7 @@ const PokedexPage = () => {
                 </A>
               );
             })}
-          <Pagination length={data ? Math.ceil(data.total / data.count) : 0} onClick={handleClick} />
+          <Pagination length={data ? Math.ceil(data.total / data.count) : 0} onClick={handlePaginationClick} />
         </div>
       </div>
     </div>
