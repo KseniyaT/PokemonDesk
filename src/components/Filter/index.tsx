@@ -2,16 +2,12 @@ import React, { useState } from 'react';
 import cn from 'classnames';
 import s from './Filter.module.scss';
 import FilterElement from './FilterElement';
+import toCapitalizeFirstLetter from '../../utils/utils';
 
 interface FilterProps {
   filterName: string;
-  filters?: IFilter[];
+  filters?: string[] | null;
   onClick: (id: string | number) => void;
-}
-
-interface IFilter {
-  id: string | number;
-  name?: string;
 }
 
 const Filter: React.FC<FilterProps> = ({ filterName, filters = [], onClick }) => {
@@ -29,13 +25,18 @@ const Filter: React.FC<FilterProps> = ({ filterName, filters = [], onClick }) =>
         {filterName}
       </div>
       <ul className={cn(s.filters, { [s.hidden]: !show })}>
-        {filters.map((filter: IFilter) => {
-          return (
-            <li key={filter.id}>
-              <FilterElement id={filter.id} name={filter.name} onClick={() => handleFilterClick(filter.id)} />
-            </li>
-          );
-        })}
+        {filters &&
+          filters.map((filter: string) => {
+            return (
+              <li key={filter}>
+                <FilterElement
+                  id={filter}
+                  name={toCapitalizeFirstLetter(filter)}
+                  onClick={() => handleFilterClick(filter)}
+                />
+              </li>
+            );
+          })}
       </ul>
     </div>
   );
