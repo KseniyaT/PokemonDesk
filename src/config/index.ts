@@ -58,8 +58,20 @@ const config: INetworkConfig = {
           pathname: '/api/v1/pokemon/{id}/delete',
         },
       },
+      getPokemonTypes: {
+        method: 'GET',
+        uri: {
+          pathname: '/api/v1/types',
+        },
+      },
     },
   },
 };
+
+export enum configEndpoint {
+  getPokemonTypes = 'getPokemonTypes',
+  getPokemons = 'getPokemons',
+  getPokemon = 'getPokemon',
+}
 
 export default config;

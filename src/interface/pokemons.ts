@@ -31,3 +31,5 @@ interface IPokemons {
 }
 
 export { IPokemons, IPokemon };
+
+export type ITypeRequest = string[];

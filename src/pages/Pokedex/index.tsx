@@ -1,33 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { A } from 'hookrouter';
+import { useDispatch, useSelector } from 'react-redux';
 import PokemonCard from '../../components/PokemonCard';
 import Heading from '../../components/Heading';
 import s from './Pokedex.module.scss';
 import Pagination from '../../components/Pagination';
 import Search from '../../components/Search';
 import useDebounce from '../../hook/useDebounce';
-import useData from '../../hook/useData';
-import { IPokemons, IPokemon } from '../../interface/pokemons';
+import { IPokemon } from '../../interface/pokemons';
 import { LinkEnum } from '../../routes';
 import Filter from '../../components/Filter';
-import FILTERS from './filters';
+import { IFilter, IQuery } from '../../interface';
+import {
+  getPokemonsAction,
+  getPokemonsData,
+  getPokemonsError,
+  getPokemonsLoading,
+  getPokemonTypes,
+  getPokemonTypesLoading,
+  getTypesAction,
+} from '../../store/pokemons';
 
 const LIMIT = 12;
 
-interface IQuery {
-  name?: string;
-  limit?: number | string;
-  offset?: number | string;
-  types?: (string | number)[];
-  [key: string]: any;
-}
-
-interface IFilter {
-  types?: (string | number)[];
-  [key: string]: any;
-}
-
 const PokedexPage = () => {
+  const dispatch = useDispatch();
+  const types = useSelector(getPokemonTypes);
+  const isTypesLoading = useSelector(getPokemonTypesLoading);
+
   const [searchValue, setSearchValue] = useState('');
   const [query, setQuery] = useState<IQuery>({ limit: LIMIT });
   const [filter, setFilter] = useState<IFilter>();
@@ -35,7 +35,17 @@ const PokedexPage = () => {
 
   const debounceValue = useDebounce(searchValue, 500);
 
-  const { data, isLoading, isError } = useData<IPokemons>('getPokemons', query, [debounceValue, filter, offset]);
+  const data = useSelector(getPokemonsData);
+  const isLoading = useSelector(getPokemonsLoading);
+  const isError = useSelector(getPokemonsError);
+
+  useEffect(() => {
+    dispatch(getTypesAction());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getPokemonsAction(query));
+  }, [debounceValue, filter, offset]);
 
   if (isError) {
     return <div>Something went wrong</div>;
@@ -98,9 +108,11 @@ const PokedexPage = () => {
         <div className={s.searchWrap}>
           <Search placeholder="Encuentra tu pokémon..." onChange={handleSearchChange} />
         </div>
-        <div className={s.filtersWrap}>
-          <Filter filterName="Type" filters={FILTERS.TYPES} onClick={(id) => handleFilterClick('types', id)} />
-        </div>
+        {isTypesLoading ? null : (
+          <div className={s.filtersWrap}>
+            <Filter filterName="Type" filters={types} onClick={(id) => handleFilterClick('types', id)} />
+          </div>
+        )}
         <div className={s.pokemonsWrap}>
           {!isLoading &&
             data &&

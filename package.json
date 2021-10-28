@@ -18,6 +18,9 @@
     "hookrouter": "1.2.3",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
+    "react-redux": "^7.2.4",
+    "redux": "^4.1.0",
+    "redux-thunk": "^2.3.0",
     "url": "^0.11.0"
   },
   "devDependencies": {
